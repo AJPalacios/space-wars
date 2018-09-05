@@ -334,17 +334,17 @@ function dibujarTextos(){
   ctx.globalApha = alpha
   if (juego.status == "perdido") {
     ctx.fillStyle = "white"
-    ctx.font = 'Bold 40pt  Arial'
+    ctx.font = 'Bold 40pt  Space Mono'
     ctx.fillText(texto.titulo, 140, 200)
     tx.font = '14pt  Arial'
     ctx.fillText(texto.subtitulo,190,250)
   }
   if (juego.status == "victoria") {
     ctx.fillStyle = "white"
-    ctx.font = 'Bold 40pt  Arial'
-    ctx.fillText(texto.titulo, 140, 200)
+    ctx.font = 'Bold 40pt Space Mono'
+    ctx.fillText(texto.titulo, 100, 200)
     ctx.font = '14pt  Arial'
-    ctx.fillText(texto.subtitulo,190,250)
+    ctx.fillText(texto.subtitulo,100,250)
   }
 
 }
