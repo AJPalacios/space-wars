@@ -4,3 +4,11 @@ canvas{
 .space-Mono{
   font-family: 'Space Mono', monospace;
 }
+
+section{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  flex-direction: column;
+}
