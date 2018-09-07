@@ -182,7 +182,7 @@ class NaveEnemiga{
 
   addShots(x,y){
     return {
-			x: x,
+			x: x+20,
 			y: y,
 			width: 30,
       height: 30,
