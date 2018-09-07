@@ -6,6 +6,33 @@ var ctx = canvas.getContext('2d')
 
 
 // Variables Globales
+
+// Howl
+var sonido_disparo = new Howl({
+  src: ['./audio/Laser_Shot.mp3'],
+  buffer: true
+})
+
+var explosion_enemy = new Howl({
+  src: ['./audio/Explosion_Enemy.mp3'],
+  buffer: true
+})
+
+var stage_clear = new Howl({
+  src: ['./audio/Stage_Clear.mp3'],
+  buffer: true
+})
+
+var gameOver_sound = new Howl({
+  src: ['./audio/Game_Over.mp3'],
+  buffer: true
+})
+
+var tema_sound = new Howl({
+  src: ['./audio/super_hexagon_trailer.mp3'],
+  buffer: true
+})
+
 var interval;
 var frame = 0;
 var images = {
@@ -14,14 +41,15 @@ var images = {
   disparoNaveEnemiga:"./images/enemy_bullet.png",
   nave1:"./images/nave1.png",
   nave2:"./images/nave2.png",
-  blastEnemy: "./images/blastEnemy.png"
+  blastEnemy: "./images/blastEnemy.png",
+  blast: "./images/blast_nave.png"
 }
 var juego = {
   status:"iniciando"
 }
 var texto = {
   contador: -1,
-  title: '',
+  title:'',
   subtitulo:''
 }
 
@@ -61,7 +89,9 @@ class Nave {
     this.width = 100
     this.height = 100
     this.status = "vivo"
+    this.score = 0
     this.shots = []
+    this.contador = 0;
     this.image = new Image()
     this.image.src = images.nave1
     this.image.onload = ()=>{
@@ -69,6 +99,8 @@ class Nave {
     }
     this.imageDisparos = new Image()
     this.imageDisparos.src = images.disparoNave
+    this.blast = new Image()
+    this.blast.src = images.blast
     
   }
 
@@ -107,6 +139,10 @@ class Nave {
     });
   }
 
+
+  drawBlast(){
+    ctx.drawImage(this.blast,this.x,this.y,this.width,this.height)
+  }
 
 }
 
@@ -238,6 +274,7 @@ function update(){
   nave_enemiga.drawEnemyShots()
   nave_enemiga.moveEnemyShots()
   checkCollition()
+  drawScore()
   dibujarTextos()
 }
 
@@ -248,21 +285,24 @@ function checkCollition(){
 
     nave_enemiga.enemigos.forEach(enemigo => {
       if (hit(disparo,enemigo)) {
-        //ctx.drawImage(images.blastEnemy, enemigo.x, enemigo.y)
+        explosion_enemy.play()
         enemigo.estado = "hit"
         enemigo.contador = 0  
         console.log("Hubo contacto")
         let index = nave_enemiga.enemigos.indexOf(enemigo)
         nave_enemiga.enemigos.splice(index,1)
+        ctx.save()
+        ctx.drawImage(nave_enemiga.blastEnemy, enemigo.x, enemigo.y, enemigo.width, enemigo.height)
+        ctx.restore()
         console.log(nave_enemiga.enemigos)
-      
+        nave_uno.score += 10
+        console.log(nave_uno.score)
       }
       
     })
     
   }
     
-
     for(var k in nave_uno.shots){
       var disparo = nave_uno.shots[k]
 
@@ -282,13 +322,16 @@ function checkCollition(){
 
   
 
-  if (nave_uno.status == "hit" || nave_uno.estado == "muerto") {
-    return 
-  }
+  if (nave_uno.status == 'hit' || nave_uno.status == 'muerto') return ;
+  console.log(nave_uno.status)
   for (var i in nave_enemiga.disparosEnemigos){
     var disparo = nave_enemiga.disparosEnemigos[i]
     if(hit(disparo,nave_uno)){
       nave_uno.status = "hit"
+      juego.status = 'perdido'
+      nave_uno.drawBlast()
+      //delete nave_uno
+      console.log(nave_uno.status)
       console.log("contacto")
     }
   }
@@ -335,8 +378,8 @@ function dibujarTextos(){
   if (juego.status == "perdido") {
     ctx.fillStyle = "white"
     ctx.font = 'Bold 40pt  Space Mono'
-    ctx.fillText(texto.titulo, 140, 200)
-    tx.font = '14pt  Arial'
+    ctx.fillText(texto.title, 140, 200)
+    ctx.font = '14pt  Arial'
     ctx.fillText(texto.subtitulo,190,250)
   }
   if (juego.status == "victoria") {
@@ -349,27 +392,33 @@ function dibujarTextos(){
 
 }
 
+function drawScore() {
+  ctx.font = "Bold 20pt Space Mono";
+  ctx.fillStyle = "white";
+  ctx.fillText("Score: "+ nave_uno.score , 0, 50);
+}
+
 function updateGameStatus(){
   if (juego.status == "jugando" && nave_enemiga.enemigos.length == 0) {
     juego.status = "victoria"
     texto.titulo = 'Derrotaste a los invasores',
     texto.subtitulo = 'Presiona la tecla R para reiniciar'
     texto.contador = 0
+    tema_sound.pause()
   }
   if (texto.contador >= 0) {
     texto.contador ++
   }
-
-  //console.log(juego.status)
-  //console.log(nave_enemiga.enemigos.length)
+  console.log(juego.status)
+  console.log(nave_enemiga.enemigos.length)
 }
-
 
 function start(){
   if (interval) return
   frame = 0
   //nave_enemiga.disparosEnemigos = []
   interval = setInterval(update, 1000/60)
+  tema_sound.play()
 }
 
 // Observers
@@ -379,21 +428,66 @@ addEventListener('keydown', (ev)=>{
   // Movimiento a la izquierda
 
   if (ev.keyCode === 37){
-		nave_uno.x -=6;
+		nave_uno.x -=8;
 		if (nave_uno.x <0) nave_uno.x=0;
 	}
 	//movimiento a la derecha
 	if (ev.keyCode === 39){
 		var limite = canvas.width - nave_uno.width;
-		nave_uno.x +=6;
+		nave_uno.x +=8;
 		if (nave_uno.x > limite) nave_uno.x = limite;
   }
   
   // disparos
 	if (ev.keyCode === 32){
-		nave_uno.fire()	
-	}
+    nave_uno.fire()
+    sonido_disparo.play()
+  }
+  
+  if (nave_uno.status == 'hit') {
+      drawScore()
+      nave_enemiga.enemigos = []
+      nave_enemiga.disparosEnemigos = []
+      nave_uno.drawBlast()
+      nave_uno.estado='muerto';
+      nave_uno.score = 0
+      tema_sound.stop()
+      gameOver_sound.play()
+			//juego.status = 'perdido';
+			texto.title ='Game Over';
+			texto.subtitulo = 'Presione la tecla R para continuar';
+      texto.contador=0;
+    if (ev.keyCode === 82){
+      gameOver_sound.stop()
+      nave_uno.contador++;
+      juego.status = 'iniciando'
+      nave_uno.status = 'vivo'
+      texto.contador = -1
+    }    
+  }
 
+  if (nave_uno.status == 'vivo' && juego.status == 'victoria') {
+      
+      nave_enemiga.enemigos = []
+      nave_enemiga.disparosEnemigos = []
+      nave_uno.drawBlast()
+      nave_uno.estado='muerto';
+      nave_uno.score = 0
+      tema_sound.stop()
+      stage_clear.play()
+			//juego.status = 'perdido';
+			texto.title ='Derrotaste a los invasores';
+			texto.subtitulo = 'Presione la tecla R para continuar';
+			texto.contador=0;
+    if (ev.keyCode === 82){
+      stage_clear.stop()
+      nave_uno.contador++;
+      juego.status = 'iniciando'
+      nave_uno.status = 'vivo'
+      texto.contador = -1
+      
+    }    
+  }
 
 })
 
