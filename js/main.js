@@ -1,4 +1,4 @@
-
+//import './store';
 // Elementos importantes del canvas
 
 var canvas = document.getElementById('game_terrain')
@@ -278,6 +278,8 @@ function update(){
   dibujarTextos()
 }
 
+
+
 function checkCollition(){
 
   for (let i = 0; i < nave_uno.shots.length; i++) {
@@ -296,6 +298,7 @@ function checkCollition(){
         ctx.restore()
         console.log(nave_enemiga.enemigos)
         nave_uno.score += 10
+        
         console.log(nave_uno.score)
       }
       
@@ -316,6 +319,7 @@ function checkCollition(){
           let index = nave_enemiga.disparosEnemigos.indexOf(bala)
           nave_enemiga.disparosEnemigos.splice(index,1)
           nave_uno.score += 5
+          
         }
       })
 
@@ -400,11 +404,14 @@ function drawScore() {
 }
 
 function updateGameStatus(){
+
+
   if (juego.status == "jugando" && nave_enemiga.enemigos.length == 0) {
     juego.status = "victoria"
     texto.titulo = 'Derrotaste a los invasores',
     texto.subtitulo = 'Presiona la tecla R para reiniciar'
     texto.contador = 0
+
     tema_sound.stop()
   }
   if (texto.contador >= 0) {
@@ -444,23 +451,28 @@ addEventListener('keydown', (ev)=>{
     nave_uno.fire()
     sonido_disparo.play()
   }
+
+  let bind_score = document.getElementById('bind').value = nave_uno.score
+  let new_score = document.getElementById('score').value = nave_uno.score
   
+
   if (nave_uno.status == 'hit') {
       drawScore()
       nave_enemiga.enemigos = []
       nave_enemiga.disparosEnemigos = []
       nave_uno.drawBlast()
       nave_uno.estado='muerto';
-      nave_uno.score = 0
+      
       tema_sound.stop()
       gameOver_sound.play()
 			//juego.status = 'perdido';
 			texto.title ='Game Over';
-			texto.subtitulo = 'Presione la tecla R para continuar';
+			texto.subtitulo = 'Presione la tecla Esc para continuar';
       texto.contador=0;
-    if (ev.keyCode === 82){
+    if (ev.keyCode === 27){
       gameOver_sound.stop()
       nave_uno.contador++;
+      nave_uno.score = 0
       juego.status = 'iniciando'
       nave_uno.status = 'vivo'
       texto.contador = -1
@@ -473,22 +485,23 @@ addEventListener('keydown', (ev)=>{
       nave_enemiga.disparosEnemigos = []
       nave_uno.drawBlast()
       nave_uno.estado='muerto';
-      nave_uno.score = 0
       tema_sound.stop()
       stage_clear.play()
 			//juego.status = 'perdido';
 			texto.title ='Derrotaste a los invasores';
-			texto.subtitulo = 'Presione la tecla R para continuar';
+			texto.subtitulo = 'Presione la tecla Esc para continuar';
 			texto.contador=0;
-    if (ev.keyCode === 82){
+    if (ev.keyCode === 27){
       stage_clear.stop()
       nave_uno.contador++;
+      nave_uno.score = 0
       juego.status = 'iniciando'
       nave_uno.status = 'vivo'
       texto.contador = -1
       
     }    
   }
+  
 
 })
 

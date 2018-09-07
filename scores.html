@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link rel="stylesheet" href="css/bulma.min.css">
+  <link rel="stylesheet" href="css/styles.css">
+  <link href="https://fonts.googleapis.com/css?family=Space+Mono" rel="stylesheet">
+  <title>Space War Scores</title>
+</head>
+<body onload="loadData()">
+  
+  <section class="table-container">
+    <div>
+      <h1 class=" title is-size-1 space-mono">Space Wars Scores</h1>
+    </div>
+    <table class=" is-size-4 space-mono table is-striped is-narrow is-hoverable">
+      <thead>
+        <tr>
+          <th class="has-text-info" >Nombre</th>
+          <th class="has-text-info">Score</th>
+        </tr>
+      </thead>
+      <tbody id="table-body">        
+      </tbody>
+    </table>
+      <div>
+        <a class="space-mono has-text-danger is-size-2" href="index.html">Inicio</a>
+      </div>
+  </section>
+
+
+  <script src="https://www.gstatic.com/firebasejs/5.0.4/firebase.js"></script>
+  <script>
+    // Initialize Firebase
+    // TODO: Replace with your project's customized code snippet
+    var config = {
+      apiKey: "AIzaSyB10BdO6OvgcH4imLJYkdzZh-t1SX_I30o",
+      authDomain: "space-wars-41b8c.firebaseapp.com",
+      databaseURL: "https://space-wars-41b8c.firebaseio.com/",
+      projectId: "space-wars-41b8c"
+    };
+    firebase.initializeApp(config);
+  </script>
+  <script src="./js/scores.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.0.15/howler.core.min.js"></script>
+  
+</body>
+</html>

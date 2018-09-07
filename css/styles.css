@@ -9,11 +9,12 @@ body{
   position: absolute;
 }
 #game_terrain{
+  margin-top: 10px;
   border: solid;
   opacity: 1;
 }
-.space-Mono{
-  font-family: 'Space Mono', monospace;
+.space-mono{
+  font-family: 'Space Mono', monospace !important;
 }
 
 section{
@@ -24,4 +25,35 @@ section{
   flex-direction: column;
   position: relative;
   
+}
+
+form{
+  margin: 20px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center; 
+}
+form>*{
+  margin-right: 20px;
+}
+
+.table-container{
+  background-color:white;
+  width: 100vw;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  height: 100vh;
+}
+.table-container, h1{
+  padding: 20px;
+}
+.table-container>table{
+  width: 80%;
+}
+a{
+  text-decoration: none;
+  font-size: 2em;
+  font-weight: 400;
 }
