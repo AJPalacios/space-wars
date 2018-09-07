@@ -206,7 +206,7 @@ class NaveEnemiga{
         //this.draw()
       }
       juego.status = "jugando"
-      
+      tema_sound.play()
       }
 
       for(var i in this.enemigos){
@@ -315,6 +315,7 @@ function checkCollition(){
           console.log("Bala eliminada")
           let index = nave_enemiga.disparosEnemigos.indexOf(bala)
           nave_enemiga.disparosEnemigos.splice(index,1)
+          nave_uno.score += 5
         }
       })
 
@@ -404,7 +405,7 @@ function updateGameStatus(){
     texto.titulo = 'Derrotaste a los invasores',
     texto.subtitulo = 'Presiona la tecla R para reiniciar'
     texto.contador = 0
-    tema_sound.pause()
+    tema_sound.stop()
   }
   if (texto.contador >= 0) {
     texto.contador ++
@@ -414,11 +415,11 @@ function updateGameStatus(){
 }
 
 function start(){
+  tema_sound.play()
   if (interval) return
   frame = 0
   //nave_enemiga.disparosEnemigos = []
   interval = setInterval(update, 1000/60)
-  tema_sound.play()
 }
 
 // Observers
@@ -491,5 +492,5 @@ addEventListener('keydown', (ev)=>{
 
 })
 
-
+tema_sound.play()
 start()
